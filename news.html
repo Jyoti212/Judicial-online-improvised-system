@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Updates: Announcements & Case News</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 40px 0;
+        }
+        
+        .announcements, .news {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section-header {
+            border-bottom: 3px solid var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .announcement, .news-item {
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .announcement-header, .news-header {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 12px 15px;
+        }
+        
+        .urgent {
+            background-color: var(--accent-color);
+        }
+        
+        .announcement-content, .news-content {
+            padding: 15px;
+        }
+        
+        .date {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .read-more {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .search-bar {
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .search-btn {
+            padding: 10px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+        }
+     
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>NEWS AND ANNOUNCEMENTS</h1>
+            <p>~Kepping you Informed on Legal Matters-Legal News you can Trust~</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search announcements and news...">
+            <button class="search-btn">Search</button>
+        </div>
+        
+        <div class="main-content">
+            <section class="announcements">
+                <h2 class="section-header">Important Announcements</h2>
+                
+                <div class="announcement">
+                    <div class="announcement-header urgent">
+                        <h3>Urgent: Court Closure Notice</h3>
+                    </div>
+                    <div class="announcement-content">
+                        <p class="date">March 20, 2025</p>
+                        <p>All district courts will be closed on March 25, 2025 due to scheduled system maintenance. Electronic filings will be accepted but not processed until March 26.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="announcement">
+                    <div class="announcement-header">
+                        <h3>Filing Procedure Updates</h3>
+                    </div>
+                    <div class="announcement-content">
+                        <p class="date">March 15, 2025</p>
+                        <p>New electronic filing procedures will take effect starting April 1, 2025. All attorneys must complete the online certification course by March 31.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="announcement">
+                    <div class="announcement-header">
+                        <h3>Bar Association Meeting</h3>
+                    </div>
+                    <div class="announcement-content">
+                        <p class="date">March 10, 2025</p>
+                        <p>The quarterly Bar Association meeting will be held on April 5, 2025 at the Municipal Conference Center. Registration is now open for all members.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="news">
+                <h2 class="section-header">Legal Case News</h2>
+                
+                <div class="news-item">
+                    <div class="news-header">
+                        <h3>Supreme Court Decision: Smith v. Johnson</h3>
+                    </div>
+                    <div class="news-content">
+                        <p class="date">March 21, 2025</p>
+                        <p>The Supreme Court has issued a landmark decision, establishing new precedent for intellectual property cases involving AI-generated content.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="news-item">
+                    <div class="news-header">
+                        <h3>Class Action Settlement: Tech Privacy Case</h3>
+                    </div>
+                    <div class="news-content">
+                        <p class="date">March 18, 2025</p>
+                        <p>A 300 million settlement has been reached in the class action lawsuit against TechCorp regarding user data privacy violations. Eligible claimants can now submit documentation.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="news-item">
+                    <div class="news-header">
+                        <h3>Appellate Court Overturns Environmental Ruling</h3>
+                    </div>
+                    <div class="news-content">
+                        <p class="date">March 16, 2025</p>
+                        <p>The 9th Circuit Court of Appeals has overturned a previous ruling in the Waters environmental case, citing procedural errors in the original judgment.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="news-item">
+                    <div class="news-header">
+                        <h3>New Trial Ordered in Corporate Fraud Case</h3>
+                    </div>
+                    <div class="news-content">
+                        <p class="date">March 12, 2025</p>
+                        <p>Judge has ordered a new trial in the high-profile corporate fraud case against former executives of Global Financial. New evidence has been admitted.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Legal Updates Center. All rights reserved.</p>
+            <p>This website is for informational purposes only and does not constitute legal advice.</p>
+        </div>
+    </footer>
+</body>
+</html>

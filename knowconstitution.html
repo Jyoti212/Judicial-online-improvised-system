@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNOW THE CONSTITUTION</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Times New Roman', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f7f6;
+        }
+
+        /* Header with Background Image */
+        header {
+            background: url('https://source.unsplash.com/1600x400/?law,constitution') center/cover;
+            color: rgb(12, 12, 12);
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 40px;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgb(194, 199, 200);
+        }
+
+        /* Language Selector */
+        .language-container {
+            text-align: center;
+            margin-top: -20px;
+            margin-bottom: 20px;
+        }
+
+        .language-container label {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 15px;
+            border: 2px solid #1f74c9;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Content Container */
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .module {
+            background: rgb(202, 226, 250);
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .module h2 {
+            color: #14066e;
+        }
+
+        /* Dropdown Style */
+        .module select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #d8db07;
+        }
+
+        /* Chatbox */
+        .chatbox {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 150px;
+            height: 35px;
+            border: 2px solid #b90d46;
+            background: rgb(205, 7, 7);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(13, 13, 13, 0.3);
+        }
+
+        .chatbox input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .chatbox button {
+            width: 100%;
+            padding: 10px;
+            background: #c2c81c;
+            color: rgb(135, 19, 19);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .chatbox button:hover {
+            background: #e0aa14;
+        }
+
+        /* PDF Translator Styles */
+        .translator-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 300px;
+            background: white;
+            border: 2px solid #272425;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 2px 2px 10px rgba(13, 13, 13, 0.3);
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .translator-container h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .translator-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .translator-container input, 
+        .translator-container select {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .translator-container button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .translator-container button:hover {
+            background-color: #2980b9;
+        }
+
+        .minimize-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .minimized {
+            height: 30px;
+            overflow: hidden;
+        }
+
+        #statusMessage {
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            background-color: #e2f3f5;
+            color: #0c5460;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin: 10px 0;
+            height: 15px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 15px;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s;
+            text-align: center;
+            line-height: 15px;
+            color: white;
+            font-size: 10px;
+        }
+
+        .download-btn {
+            background-color: #27ae60 !important;
+            display: none;
+        }
+
+        .download-btn:hover {
+            background-color: #219653 !important;
+        }
+
+        #copyBtn {
+            background-color: #7f8c8d;
+            font-size: 12px;
+            padding: 5px 8px;
+            display: none;
+        }
+
+        #copyBtn:hover {
+            background-color: #6c7a7d;
+        }
+
+        #translatedContent {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 100px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .chatbox {
+            position: fixed;
+            bottom: 40px;
+            right: 10px;
+            width: 150px;
+            height: 35px;
+            border: 2px solid #090909;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(13, 13, 13, 0.3);
+        }
+
+        .chatbox input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .chatbox button {
+            width: 100%;
+            padding: 10px;
+            background: #c1c2c3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .chatbox button:hover {
+            background: #0055aa;
+        }
+        button {
+            background-color: #dedfe1;
+            color: rgb(196, 193, 193);
+            border: none;
+            padding: 100px;
+            width: 50%;
+            font-size: 50px;
+            border-radius: 2px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #e7eaed;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Background Image -->
+    <header>
+       GET TO KNOW THE CONSTITUTION
+    </header>
+
+    <!-- Language Selection Below the Header -->
+    <div class="language-container">
+        <label for="language"><strong>Select Language:</strong></label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Tamil">Tamil</option>
+            <option value="Bengali">Bengali</option>
+            <option value="Marwadi">Marwadi</option> 
+            <option value="Gujarathi">Gujarathi</option> 
+            <option value="Punjabi">Punjabi</option> 
+        </select>
+    </div>
+
+    <!-- Modules Section -->
+    <div class="container">
+        <div class="module">
+            <h2>Module 1: Introduction to the Constitution</h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023050195.pdf">📄 View PDF</option>
+                <option value="https://youtu.be/sDstf8ockUo?si=YQjus1P6HKd2jHZT">📹 Watch Video</option>
+            </select>
+        </div>
+
+        <div class="module">
+            <h2>Module 2: Fundamental Rights</h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://legalaffairs.gov.in/sites/default/files/chapter%203.pdf">📄 View PDF</option>
+                <option value="https://youtu.be/pvbcJ7SkG8w?si=Nws_gkoxO4nRs0Ir">📹 Watch Video</option>
+            </select>
+        </div>
+
+        <div class="module">
+            <h2>Module 3: Directive Principles</h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://www.mea.gov.in/images/pdf1/part4.pdf">📄 View PDF</option>
+                <option value="https://youtu.be/Id_Chh5y8Zc?si=UCQnXJadCqsEObv5">📹 Watch Video</option>
+            </select>
+        </div>
+        <div class="module">
+            <h2>Module 4: Judiciary Systems</h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://www.mea.gov.i">📄 View PDF</option>
+                <option value="https://youtu.be">📹 Watch Video</option>
+            </select>
+        </div>
+        <div class="module">
+            <h2>Module 5:The State Goverment Statework </h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://www.mea.gov.in/">📄 View PDF</option>
+                <option value="https://youtu.be/Id_">📹 Watch Video</option>
+            </select>
+        </div>
+        <div class="module">
+            <h2>Module 6: The Union Goverment System</h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://www.mea.gov.in//part4.pdf.pdf">📄 View PDF</option>
+                <option value="https://youtu.b5y8Zc?si=UCQnXJadCqsEObv5">📹 Watch Video</option>
+            </select>
+        </div>
+        <div class="module">
+            <h2>Module 7:.....</h2>
+            <select onchange="window.open(this.value, '_blank')">
+                <option value="#">Select an option</option>
+                <option value="https://www.me">📄 View PDF</option>
+                <option value="https://yout">📹 Watch Video</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- AI Chatbox -->
+    <div class="chatbox">
+        
+        
+
+        
+    </button><a href="aichatbot.html">AI Chatbot</a></button>
+    </div>
+
+    <!-- PDF Translator in Bottom Left -->
+    <div id="translatorContainer" class="translator-container">
+        <button class="minimize-btn" onclick="toggleTranslator()">−</button>
+        <h3>Translate PDF</h3>
+        <label for="pdfUrl">PDF URL:</label>
+        <input type="text" id="pdfUrl" placeholder="https://example.com/document.pdf" />
+        
+        <label for="languageSelect">Target Language:</label>
+        <select id="languageSelect">
+            <option value="hi">Hindi (हिन्दी)</option>
+            <option value="bn">Bengali (বাংলা)</option>
+            <option value="te">Telugu (తెలుగు)</option>
+            <option value="ta">Tamil (தமிழ்)</option>
+            <option value="mr">Marathi (मराठी)</option>
+            <option value="gu">Gujarati (ગુજરાતી)</option>
+            <option value="kn">Kannada (ಕನ್ನಡ)</option>
+            <option value="ml">Malayalam (മലയാളം)</option>
+            <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+            <option value="or">Odia (ଓଡ଼ିଆ)</option>
+            <option value="ur">Urdu (اردو)</option>
+            <option value="as">Assamese (অসমীয়া)</option>
+        </select>
+        
+        <div style="display: flex;">
+            <button id="translateBtn">Translate</button>
+            <button id="cancelBtn" style="display: none;">Cancel</button>
+        </div>
+        
+        <div id="statusMessage"></div>
+        <div class="progress-container">
+            <div class="progress-bar">0%</div>
+        </div>
+        
+        <h4>Translated Content:</h4>
+        <div id="translatedContent">
+            <p>Translated content will appear here.</p>
+        </div>
+        <div style="display: flex;">
+            <button id="downloadBtn" class="download-btn">Download</button>
+            <button id="copyBtn">Copy Text</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        
+        // Language change function for the main site
+        function changeLanguage() {
+            var selectedLang = document.getElementById("language").value;
+            alert("Language changed to: " + selectedLang);
+        }
+        
+        // Toggle translator minimize/expand
+        function toggleTranslator() {
+            const container = document.getElementById('translatorContainer');
+            const minButton = document.querySelector('.minimize-btn');
+            
+            if (container.classList.contains('minimized')) {
+                container.classList.remove('minimized');
+                minButton.textContent = '−';
+            } else {
+                container.classList.add('minimized');
+                minButton.textContent = '+';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const translateBtn = document.getElementById('translateBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const pdfUrlInput = document.getElementById('pdfUrl');
+            const languageSelect = document.getElementById('languageSelect');
+            const statusMessage = document.getElementById('statusMessage');
+            const translatedContent = document.getElementById('translatedContent');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            let cancelTranslation = false;
+            let translationComplete = false;
+            let fullTranslatedText = '';
+            
+            translateBtn.addEventListener('click', async function() {
+                const pdfUrl = pdfUrlInput.value.trim();
+                const targetLanguage = languageSelect.value;
+                
+                if (!pdfUrl) {
+                    showStatus('Please enter a valid PDF URL', 'error');
+                    return;
+                }
+                
+                // Reset cancelation flag
+                cancelTranslation = false;
+                translationComplete = false;
+                
+                // Show cancel button and hide download button
+                translateBtn.disabled = true;
+                cancelBtn.style.display = 'block';
+                downloadBtn.style.display = 'none';
+                copyBtn.style.display = 'none';
+                
+                // Start translation process
+                translatePdf(pdfUrl, targetLanguage);
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                cancelTranslation = true;
+                showStatus('Translation cancelled.', 'error');
+                cancelBtn.style.display = 'none';
+                translateBtn.disabled = false;
+                progressContainer.style.display = 'none';
+            });
+            
+            downloadBtn.addEventListener('click', function() {
+                if (!translationComplete) return;
+                
+                const targetLanguage = languageSelect.value;
+                const languageNames = {
+                    'hi': 'Hindi', 'bn': 'Bengali', 'te': 'Telugu', 'ta': 'Tamil',
+                    'mr': 'Marathi', 'gu': 'Gujarati', 'kn': 'Kannada', 'ml': 'Malayalam',
+                    'pa': 'Punjabi', 'or': 'Odia', 'ur': 'Urdu', 'as': 'Assamese'
+                };
+                
+                const blob = new Blob([fullTranslatedText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `translated_to_${languageNames[targetLanguage]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+            
+            copyBtn.addEventListener('click', function() {
+                if (!translationComplete) return;
+                
+                navigator.clipboard.writeText(fullTranslatedText)
+                    .then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+            });
+            
+            async function translatePdf(pdfUrl, targetLanguage) {
+                try {
+                    // Show loading status and progress bar
+                    showStatus('Loading PDF content...', 'loading');
+                    progressContainer.style.display = 'block';
+                    updateProgress(0, 'Extracting text...');
+                    
+                    // Step 1: Fetch and parse the PDF
+                    const { pdfText, pageCount } = await extractTextFromPdf(pdfUrl);
+                    
+                    if (cancelTranslation) return;
+                    
+                    if (!pdfText || pdfText.trim() === '') {
+                        showStatus('Could not extract text from the PDF. Please check the URL and try again.', 'error');
+                        translateBtn.disabled = false;
+                        cancelBtn.style.display = 'none';
+                        progressContainer.style.display = 'none';
+                        return;
+                    }
+                    
+                    // Step 2: Translate the content in chunks
+                    showStatus(`Translating content to ${languageSelect.options[languageSelect.selectedIndex].text}...`, 'loading');
+                    
+                    const totalContent = pdfText;
+                    fullTranslatedText = await translateFullContent(totalContent, targetLanguage);
+                    
+                    if (cancelTranslation) return;
+                    
+                    // Display the translated content
+                    const isRtl = targetLanguage === 'ur';
+                    translatedContent.innerHTML = `
+                        <div dir="${isRtl ? 'rtl' : 'ltr'}" style="white-space: pre-wrap; line-height: 1.6;">
+                            ${escapeHtml(fullTranslatedText)}
+                        </div>
+                    `;
+                    
+                    // Update UI for completion
+                    showStatus('Translation completed successfully!', 'success');
+                    translateBtn.disabled = false;
+                    cancelBtn.style.display = 'none';
+                    downloadBtn.style.display = 'block';
+                    copyBtn.style.display = 'block';
+                    updateProgress(100, 'Complete');
+                    translationComplete = true;
+                    
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    showStatus(`An error occurred: ${error.message}. Please try again.`, 'error');
+                    translateBtn.disabled = false;
+                    cancelBtn.style.display = 'none';
+                    progressContainer.style.display = 'none';
+                }
+            }
+            
+            async function extractTextFromPdf(pdfUrl) {
+                try {
+                    // Fetch the PDF document
+                    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                    const pdf = await loadingTask.promise;
+                    const pageCount = pdf.numPages;
+                    
+                    let fullText = '';
+                    
+                    // Loop through each page
+                    for (let i = 1; i <= pageCount; i++) {
+                        if (cancelTranslation) {
+                            throw new Error('Operation cancelled by user');
+                        }
+                        
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        
+                        // Extract text items and preserve some formatting
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n\n';
+                        
+                        // Update progress
+                        const progressPercent = Math.round((i / pageCount) * 40); // First 40% for extraction
+                        updateProgress(progressPercent, `Extracting page ${i}/${pageCount}`);
+                    }
+                    
+                    return { pdfText: fullText, pageCount };
+                } catch (error) {
+                    console.error('PDF extraction error:', error);
+                    throw new Error('Failed to extract text from PDF');
+                }
+            }
+            
+            async function translateFullContent(content, targetLanguage) {
+                // In a real implementation, we would chunk the content and translate each chunk
+                // For this demo, we'll simulate the translation of a large document
+                
+                const chunkSize = 1000; // Characters per chunk
+                const chunks = [];
+                
+                // Split content into manageable chunks
+                for (let i = 0; i < content.length; i += chunkSize) {
+                    chunks.push(content.substring(i, i + chunkSize));
+                }
+                
+                let translatedContent = '';
+                
+                for (let i = 0; i < chunks.length; i++) {
+                    if (cancelTranslation) {
+                        throw new Error('Operation cancelled by user');
+                    }
+                    
+                    // Simulate API call delay
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                    // In a real implementation, you would call your translation API here
+                    // translatedChunk = await callTranslationAPI(chunks[i], targetLanguage);
+                    const translatedChunk = simulateTranslateChunk(chunks[i], targetLanguage);
+                    translatedContent += translatedChunk;
+                    
+                    // Update progress - from 40% to 95%
+                    const progressPercent = 40 + Math.round((i / chunks.length) * 55);
+                    updateProgress(progressPercent, `Translating chunk ${i+1}/${chunks.length}`);
+                }
+                
+                // Final progress update
+                updateProgress(95, 'Finalizing translation...');
+                
+                return translatedContent;
+            }
+            
+            function simulateTranslateChunk(text, targetLanguage) {
+                // This is just a simulation for demonstration purposes
+                // In a real application, you would call a translation API
+                
+                // Create a realistic looking translation of the text by keeping some of the structure
+                // but replacing actual content with foreign-looking characters based on language
+                
+                const translationPatterns = {
+                    'hi': () => text.replace(/[a-zA-Z]+/g, match => {
+                        const chars = 'अआइईउऊऋएऐओऔकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह';
+                        return Array.from({length: match.length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                    }),
+                    'bn': () => text.replace(/[a-zA-Z]+/g, match => {
+                        const chars = 'অআইঈউঊঋএঐওঔকখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহ';
+                        return Array.from({length: match.length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                    }),
+                    'te': () => text.replace(/[a-zA-Z]+/g, match => {
+                        const chars = 'అఆఇఈఉఊఋఌఎఏఐఒఓఔకఖగఘఙచఛజఝఞటఠడఢణతథదధనపఫబభమయరలవశషసహ';
+                        return Array.from({length: match.length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                    }),
+                    'ta': () => text.replace(/[a-zA-Z]+/g, match => {
+                        const chars = 'அஆஇஈஉஊஎஏஐஒஓஔகஙசஜஞடணதநபமயரலவழளறனஜஷஸஹ';
+                        return Array.from({length: match.length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                    })
+                };
+                
+                // For languages not explicitly defined, use Hindi pattern as default
+                const translateFunc = translationPatterns[targetLanguage] || translationPatterns['hi'];
+                return translateFunc();
+            }
+            
+            function updateProgress(percent, message) {
+                progressBar.style.width = `${percent}%`;
+                progressBar.textContent = message || `${percent}%`;
+            }
+            
+            function showStatus(message, type) {
+                statusMessage.textContent = message;
+                statusMessage.className = type;
+            }
+            
+            function escapeHtml(text) {
+                return text
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+        });
+    </script>
+</body>
+</html>

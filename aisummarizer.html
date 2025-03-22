@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Summarizer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .upload-container {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .upload-container:hover {
+            background-color: #e2e6ea;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .summary-container {
+            display: none;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .summary-body {
+            white-space: pre-line;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .file-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+        
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            margin: 20px auto;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .options-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        
+        .option-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-label {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF Summarizer</h1>
+    
+    <div class="container">
+        <div class="upload-container" id="upload-area">
+            <div class="upload-icon">📄</div>
+            <h2>Upload PDF File</h2>
+            <p>Click or drag and drop your PDF file here</p>
+            <input type="file" id="file-input" accept=".pdf">
+            <div class="file-info" id="file-info"></div>
+            <div class="error-message" id="error-message"></div>
+        </div>
+        
+        <div class="options-container">
+            <div class="option-group">
+                <span class="option-label">Summary Length:</span>
+                <select id="summary-length">
+                    <option value="short">Short</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="long">Long</option>
+                </select>
+            </div>
+            
+            <div class="option-group">
+                <span class="option-label">Focus on:</span>
+                <select id="summary-focus">
+                    <option value="general" selected>General Content</option>
+                    <option value="key-terms">Key Terms</option>
+                    <option value="statistics">Statistics & Figures</option>
+                </select>
+            </div>
+        </div>
+        
+        <button id="summarize-btn" disabled>Generate Summary</button>
+        
+        <div class="loader" id="loader"></div>
+        
+        <div class="summary-container" id="summary-container">
+            <div class="summary-header">
+                <h2>Summary</h2>
+                <button id="copy-btn">Copy</button>
+            </div>
+            <div class="summary-body" id="summary-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Set up PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const summarizeBtn = document.getElementById('summarize-btn');
+            const summaryContainer = document.getElementById('summary-container');
+            const summaryContent = document.getElementById('summary-content');
+            const copyBtn = document.getElementById('copy-btn');
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
+            const summaryLengthSelect = document.getElementById('summary-length');
+            const summaryFocusSelect = document.getElementById('summary-focus');
+            
+            let currentFile = null;
+            
+            // Handle click on upload area
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            // Handle drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = '#e2e6ea';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.backgroundColor = '#f8f9fa';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = '#f8f9fa';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+            
+            // Process the selected file
+            function handleFile(file) {
+                if (file.type !== 'application/pdf') {
+                    showError('Please select a PDF file.');
+                    return;
+                }
+                
+                if (file.size > 20 * 1024 * 1024) { // 20MB limit
+                    showError('File size exceeds 20MB limit.');
+                    return;
+                }
+                
+                currentFile = file;
+                fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+                summarizeBtn.disabled = false;
+                hideError();
+            }
+            
+            // Handle summarize button click
+            summarizeBtn.addEventListener('click', async () => {
+                if (!currentFile) return;
+                
+                // Show loader and hide previous summary
+                loader.style.display = 'block';
+                summaryContainer.style.display = 'none';
+                
+                try {
+                    // Extract text from PDF
+                    const pdfText = await extractTextFromPdf(currentFile);
+                    
+                    // Get summary options
+                    const summaryLength = summaryLengthSelect.value;
+                    const summaryFocus = summaryFocusSelect.value;
+                    
+                    // Generate summary
+                    const summary = generateSummary(pdfText, summaryLength, summaryFocus);
+                    
+                    // Display the summary
+                    summaryContent.textContent = summary;
+                    summaryContainer.style.display = 'block';
+                } catch (error) {
+                    showError('Error: ' + error.message);
+                } finally {
+                    loader.style.display = 'none';
+                }
+            });
+            
+            // Copy summary to clipboard
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(summaryContent.textContent)
+                    .then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                        }, 2000);
+                    });
+            });
+            
+            // Helper functions
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' bytes';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                summarizeBtn.disabled = true;
+            }
+            
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+            
+            // Extract text from PDF using PDF.js
+            async function extractTextFromPdf(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = async function(event) {
+                        try {
+                            const typedArray = new Uint8Array(event.target.result);
+                            const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                            let fullText = '';
+                            
+                            // Extract text from all pages (or first 50 for performance)
+                            const maxPages = Math.min(pdf.numPages, 50);
+                            
+                            for (let i = 1; i <= maxPages; i++) {
+                                const page = await pdf.getPage(i);
+                                const textContent = await page.getTextContent();
+                                const textItems = textContent.items.map(item => item.str).join(' ');
+                                fullText += textItems + '\n';
+                            }
+                            
+                            resolve(fullText);
+                        } catch (error) {
+                            reject(new Error('Failed to parse PDF: ' + error.message));
+                        }
+                    };
+                    
+                    reader.onerror = function() {
+                        reject(new Error('Failed to read file'));
+                    };
+                    
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+            
+            // Generate summary using rule-based techniques
+            function generateSummary(text, length, focus) {
+                // Clean the text
+                const cleanText = text.replace(/\s+/g, ' ').trim();
+                
+                // Split into sentences
+                const sentences = cleanText.match(/[^\.!\?]+[\.!\?]+/g) || [];
+                
+                if (sentences.length === 0) {
+                    return "Unable to generate summary: Could not identify sentences in the document.";
+                }
+                
+                // Get title (assume first sentence might be a title)
+                let title = sentences[0].trim();
+                if (title.length > 100) {
+                    title = title.substring(0, 100) + "...";
+                }
+                
+                // Calculate sentence scores
+                const sentenceScores = calculateSentenceScores(sentences, focus);
+                
+                // Determine how many sentences to include based on length
+                let numSentences;
+                switch (length) {
+                    case 'short':
+                        numSentences = Math.max(3, Math.floor(sentences.length * 0.1));
+                        break;
+                    case 'medium':
+                        numSentences = Math.max(5, Math.floor(sentences.length * 0.2));
+                        break;
+                    case 'long':
+                        numSentences = Math.max(7, Math.floor(sentences.length * 0.3));
+                        break;
+                    default:
+                        numSentences = Math.max(5, Math.floor(sentences.length * 0.2));
+                }
+                
+                // Cap at a reasonable number
+                numSentences = Math.min(numSentences, 20);
+                
+                // Get top sentences
+                const topSentences = getTopSentences(sentences, sentenceScores, numSentences);
+                
+                // Create the summary
+                const summaryTitle = `Summary of "${title}"\n\n`;
+                const summaryBody = topSentences.join(' ');
+                
+                // Format the summary with key points
+                const keyPoints = extractKeyPoints(text, focus);
+                const keyPointsText = keyPoints.length > 0 
+                    ? "\n\nKey Points:\n" + keyPoints.map((point, i) => `${i+1}. ${point}`).join('\n')
+                    : "";
+                
+                return summaryTitle + summaryBody + keyPointsText;
+            }
+            
+            // Calculate scores for each sentence
+            function calculateSentenceScores(sentences, focus) {
+                const scores = [];
+                
+                // Get word frequencies
+                const wordFreq = {};
+                const allText = sentences.join(' ').toLowerCase();
+                const words = allText.match(/\b\w+\b/g) || [];
+                
+                words.forEach(word => {
+                    if (word.length > 2) { // Ignore very short words
+                        wordFreq[word] = (wordFreq[word] || 0) + 1;
+                    }
+                });
+                
+                // Get top keywords
+                const topKeywords = Object.keys(wordFreq)
+                    .filter(word => !isStopWord(word))
+                    .sort((a, b) => wordFreq[b] - wordFreq[a])
+                    .slice(0, 30);
+                
+                // Score each sentence
+                sentences.forEach((sentence, index) => {
+                    const lowerSentence = sentence.toLowerCase();
+                    let score = 0;
+                    
+                    // Position score: first and last sentences usually important
+                    if (index === 0 || index === sentences.length - 1) {
+                        score += 3;
+                    }
+                    
+                    // Length score: avoid very short or very long sentences
+                    const wordCount = (sentence.match(/\b\w+\b/g) || []).length;
+                    if (wordCount > 5 && wordCount < 40) {
+                        score += 2;
+                    }
+                    
+                    // Keyword score
+                    topKeywords.forEach(keyword => {
+                        if (lowerSentence.includes(keyword)) {
+                            score += 1;
+                        }
+                    });
+                    
+                    // Special scoring based on focus
+                    if (focus === 'key-terms') {
+                        // Look for definition patterns
+                        if (lowerSentence.includes(' is ') || lowerSentence.includes(' are ') ||
+                            lowerSentence.includes(' refers to ') || lowerSentence.includes(' defined as ')) {
+                            score += 3;
+                        }
+                    } else if (focus === 'statistics') {
+                        // Look for numbers and percentages
+                        const hasNumbers = /\d+\.?\d*%?/.test(lowerSentence);
+                        if (hasNumbers) {
+                            score += 3;
+                        }
+                    }
+                    
+                    scores.push({ index, score });
+                });
+                
+                return scores;
+            }
+            
+            // Get top N sentences based on scores
+            function getTopSentences(sentences, scores, n) {
+                // Sort by score
+                const sortedScores = [...scores].sort((a, b) => b.score - a.score);
+                
+                // Get top N
+                const topIndices = sortedScores.slice(0, n).map(item => item.index);
+                
+                // Sort by original position to maintain flow
+                topIndices.sort((a, b) => a - b);
+                
+                // Return sentences in original order
+                return topIndices.map(index => sentences[index].trim());
+            }
+            
+            // Extract key points
+            function extractKeyPoints(text, focus) {
+                const points = [];
+                const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [];
+                
+                // Different extraction techniques based on focus
+                if (focus === 'key-terms') {
+                    // Look for definitions
+                    sentences.forEach(sentence => {
+                        if (sentence.match(/\b\w+\b is defined as /) || 
+                            sentence.match(/\b\w+\b refers to /) ||
+                            (sentence.match(/\b\w+\b is /) && sentence.length < 100)) {
+                            points.push(sentence.trim());
+                        }
+                    });
+                } else if (focus === 'statistics') {
+                    // Look for sentences with numbers
+                    sentences.forEach(sentence => {
+                        if (sentence.match(/\d+\.?\d*%/) || 
+                            (sentence.match(/\d+\.?\d*/) && 
+                             (sentence.includes('increase') || 
+                              sentence.includes('decrease') || 
+                              sentence.includes('total') || 
+                              sentence.includes('average')))) {
+                            points.push(sentence.trim());
+                        }
+                    });
+                } else {
+                    // General focus - look for highlighted sentences
+                    sentences.forEach(sentence => {
+                        if (sentence.includes('importantly') || 
+                            sentence.includes('significant') || 
+                            sentence.includes('key finding') || 
+                            sentence.includes('conclude') ||
+                            sentence.includes('therefore')) {
+                            points.push(sentence.trim());
+                        }
+                    });
+                }
+                
+                // Limit to reasonable number
+                return points.slice(0, 5);
+            }
+            
+            // Stop words list for English
+            function isStopWord(word) {
+                const stopWords = ['the', 'and', 'is', 'in', 'to', 'of', 'that', 'this', 
+                                   'for', 'with', 'on', 'by', 'at', 'from', 'an', 'are', 
+                                   'as', 'be', 'was', 'were', 'has', 'have', 'had', 'not', 
+                                   'but', 'or', 'if', 'then', 'so', 'than', 'what', 'who', 
+                                   'when', 'where', 'which', 'how', 'been', 'will', 'would'];
+                return stopWords.includes(word);
+            }
+        });
+    </script>
+</body>
+</html>

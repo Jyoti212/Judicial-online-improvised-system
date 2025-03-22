@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Case Repository</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --secondary: #8338ec;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --info: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        
+        .search-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: var(--primary);
+        }
+        
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        tr:hover {
+            background-color: rgba(58, 134, 255, 0.05);
+        }
+        
+        .link-input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .link-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+        }
+        
+        .file-link {
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-link i {
+            margin-right: 8px;
+        }
+        
+        .file-link:hover {
+            text-decoration: underline;
+        }
+        
+        .button-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .add-row-btn {
+            background: linear-gradient(to right, var(--success), var(--info));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .add-row-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .empty-row {
+            text-align: center;
+            color: #888;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="animate">
+            <h1>DIGITAL CASE REPOSITORY</h1>
+            <div class="subtitle">National Judicial Documentation System</div>
+        </header>
+        
+        <div class="search-container animate" style="animation-delay: 0.1s;">
+            <input type="text" id="searchInput" placeholder="Search for cases by number, location, or details...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div class="table-container animate" style="animation-delay: 0.2s;">
+            <table id="caseTable">
+                <thead>
+                    <tr>
+                        <th>CASE NUMBER</th>
+                        <th>COURT DETAILS</th>
+                        <th>TIME AND PLACE</th>
+                        <th>CASE FILES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>OS 212/2200</td>
+                        <td>Court Room No.19, Mazgaon</td>
+                        <td>Mumbai, 9:00 AM</td>
+                        <td>
+                            <input type="file" id="pdf1" accept=".pdf" style="display:none">
+                            <button class="upload-btn" onclick="window.open('https://drive.google.com/file/d/1ryde37vF3OC5fr-U12XXJ72dRRsOwtjQ/view?usp=drivesdk', '_blank');">Open PDF</button>
+                            <span class="pdf-filename" id="filename1"></span>
+                        </td>  
+                    </tr>
+                    <tr>
+                        <td>OC 11/345</td>
+                        <td>Court Room No.31, Tis Hazari Court Complex</td>
+                        <td>Delhi, 10:30 AM</td>
+                        <td>
+                            <a href="#" class="file-link" id="link-2">
+                                <i class="fas fa-file-pdf"></i> Case File
+                            </a>
+                            <input type="text" class="link-input" placeholder="Enter PDF URL" style="display:none;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>OS 12/3300</td>
+                        <td>Court Room No.12, Nrupathunga Road</td>
+                        <td>Bangalore, 1:00 PM</td>
+                        <td>
+                            <a href="#" class="file-link" id="link-3">
+                                <i class="fas fa-file-pdf"></i> Case File
+                            </a>
+                            <input type="text" class="link-input" placeholder="Enter PDF URL" style="display:none;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Os 12/8750</td>
+                        <td>Court Room No.29,supreme court</td>
+                        <td>Delhi, 2:15 PM</td>
+                        <td>
+                            <a href="#" class="file-link" id="link-2">
+                                <i class="fas fa-file-pdf"></i> Case File
+                            </a>
+                            <input type="text" class="link-input" placeholder="Enter PDF URL" style="display:none;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Of 12/412</td>
+                        <td>Court Room No.78,nisharni Court Complex</td>
+                        <td>Thiruvanantpuram, 07:47 PM</td>
+                        <td>
+                            <a href="#" class="file-link" id="link-2">
+                                <i class="fas fa-file-pdf"></i> Case File
+                            </a>
+                            <input type="text" class="link-input" placeholder="Enter PDF URL" style="display:none;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="button-container animate" style="animation-delay: 0.3s;">
+            <button class="add-row-btn" onclick="addRow()">
+                <i class="fas fa-plus"></i> Add New Case
+            </button>
+        </div>
+        
+        <div class="footer animate" style="animation-delay: 0.4s;">
+            © 2025 Digital Case Repository System | All Rights Reserved
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up click handlers for all file links
+            document.querySelectorAll('.file-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleLinkInput(this);
+                });
+            });
+            
+            // Set up search functionality
+            document.getElementById('searchInput').addEventListener('keyup', searchTable);
+        });
+        
+        function toggleLinkInput(linkElement) {
+            const cell = linkElement.parentElement;
+            const input = cell.querySelector('.link-input');
+            
+            if (input.style.display === 'none') {
+                // Show input, hide link
+                linkElement.style.display = 'none';
+                input.style.display = 'block';
+                input.focus();
+                
+                // Add blur event to save link
+                input.addEventListener('blur', function() {
+                    saveLink(linkElement, input);
+                });
+                
+                // Add enter key event
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveLink(linkElement, input);
+                    }
+                });
+            }
+        }
+        
+        function saveLink(linkElement, input) {
+            const url = input.value.trim();
+            
+            if (url) {
+                // Valid URL entered
+                linkElement.href = url;
+                linkElement.target = "_blank"; // Open in new tab
+                linkElement.innerHTML = '<i class="fas fa-file-pdf"></i> View Case File';
+            }
+            
+            // Hide input, show link
+            input.style.display = 'none';
+            linkElement.style.display = 'flex';
+        }
+        
+        function searchTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const tbody = document.getElementById("caseTable").querySelector("tbody");
+            const rows = tbody.getElementsByTagName("tr");
+            let foundAny = false;
+            
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName("td");
+                let found = false;
+                
+                for (let j = 0; j < cells.length - 1; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const textValue = cell.textContent || cell.innerText;
+                        if (textValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            foundAny = true;
+                            break;
+                        }
+                    }
+                }
+                
+                rows[i].style.display = found ? "" : "none";
+            }
+            
+            // Show "no results" message if needed
+            let noResults = document.querySelector('.empty-row');
+            
+            if (!foundAny && filter) {
+                if (!noResults) {
+                    noResults = document.createElement('tr');
+                    noResults.className = 'empty-row';
+                    noResults.innerHTML = '<td colspan="4">No matching cases found</td>';
+                    tbody.appendChild(noResults);
+                }
+                noResults.style.display = "";
+            } else if (noResults) {
+                noResults.style.display = "none";
+            }
+        }
+        
+        function addRow() {
+            const tbody = document.getElementById("caseTable").querySelector("tbody");
+            const newRow = document.createElement('tr');
+            newRow.className = 'animate';
+            
+            // Create new row with editable cells
+            newRow.innerHTML = `
+                <td contenteditable="true">New Case</td>
+                <td contenteditable="true">Court Details</td>
+                <td contenteditable="true">Time and Location</td>
+                <td>
+                    <a href="#" class="file-link">
+                        <i class="fas fa-file-pdf"></i> Add Case File
+                    </a>
+                    <input type="text" class="link-input" placeholder="Enter PDF URL" style="display:none;">
+                </td>
+            `;
+            
+            tbody.appendChild(newRow);
+            
+            // Add event listener to the new link
+            const newLink = newRow.querySelector('.file-link');
+            newLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleLinkInput(this);
+            });
+        }
+    </script>
+</body>
+</html>

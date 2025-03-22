@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judiciary of India - Official Portal</title>
+    <style>
+        body {
+            font-family: 'Garamond', 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            background-image: linear-gradient(to bottom, #f5f5f5, #e8f0f5);
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin: 20px 0 40px;
+            position: relative;
+        }
+
+        .header::before, .header::after {
+            content: "";
+            position: absolute;
+            height: 3px;
+            width: 100px;
+            background: linear-gradient(to right, transparent, #8b0000, transparent);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .header::before {
+            top: -15px;
+        }
+
+        .header::after {
+            bottom: -15px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header img {
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        .news-bar {
+            background: linear-gradient(to right, #1c2e5a, #233a72, #1c2e5a);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin: 30px 0;
+            font-size: 18px;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            font-style: italic;
+        }
+
+        .news-bar p {
+            margin: 0;
+            animation: scroll 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .tab {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e6e6e6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #8b0000, #1c2e5a);
+        }
+
+        .tab:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab img {
+            width: 100%;
+            height: 130px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .tab:hover img {
+            transform: scale(1.1);
+        }
+
+        .tab h3 {
+            font-size: 20px;
+            color: #1c2e5a;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .tab a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1c2e5a;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .tab a:hover {
+            background-color: #8b0000;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Judiciary of India</h1>
+            <img src="images/HEADER.jpg" alt="Courts of India">
+        </div>
+
+        <!-- News Bar -->
+        <div class="news-bar">
+            <p>Supreme Court To Hear On 8 May Pleas Relating To Deportation & Living Conditions Of Rohingya Refugees--Sharad Pawar meets nephew Ajit; ally Sanjay Raut reacts--Samajwadi Party MP calls Rajput warrior king Rana Sanga ‘traitor’; BJP reacts</p>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="tabs">
+            <!-- Tab 1: Announcement and News -->
+            <div class="tab">
+                <img src="images/news.webp" alt="Judicial News">
+                <h3>JUDICIAL BULLETINS</h3>
+                <a href="news.html">VIEW</a>
+            </div>
+            
+            <!-- Tab 2: Case Tracking -->
+            <div class="tab">
+                <img src="images/ecourt.png" alt="Case Tracking">
+                <h3>CASE STATUS PORTAL</h3>
+                <a href="casetracking.html">ACCESS</a>
+            </div>
+            
+            <!-- Tab 3: About Constitution -->
+            <div class="tab">
+                <img src="images/constitution.jpg" alt="Constitution">
+                <h3>CONSTITUTIONAL COMPENDIUM</h3>
+                <a href="knowconstitution.html">EXPLORE</a>
+            </div>
+            
+            <!-- Tab 4: Adjournment List -->
+            <div class="tab">
+                <img src="images/court.png" alt="Court Schedule">
+                <h3>ADJOURNMENT REGISTRY</h3>
+                <a href="adjournment.html">CONSULT</a>
+            </div>
+            
+            <!-- Tab 5: User Account -->
+            <div class="tab">
+                <img src="images/users.webp" alt="User Profile">
+                <h3>ADVOCATE PORTAL</h3>
+                <a href="userprofile.html">SIGN IN</a>
+            </div>
+            
+            <!-- Tab 6: Petition Submission -->
+            <div class="tab">
+                <img src="images/petition.jpg" alt="Petition System">
+                <h3>PETITION FILING SYSTEM</h3>
+                <a href="petition.html">SUBMIT</a>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2025 Judiciary of India | All Rights Reserved
+        </footer>
+    </div>
+
+</body>
+</html>
